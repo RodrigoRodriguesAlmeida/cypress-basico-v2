@@ -5,6 +5,7 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     beforeEach(function() {
         cy.visit ('./src/index.html')
     })
+
     it('Verifica o título da aplicação', function() {        
         cy.title().should('be.equal', 'Central de Atendimento ao Cliente TAT')        
     })
@@ -194,6 +195,30 @@ describe('Central de Atendimento ao Cliente TAT', function() {
 
       cy.contains('Talking About Testing').should('be.visible')
       cy.title().should('be.equal', 'Central de Atendimento ao Cliente TAT - Política de privacidade')
+    })
+
+    it('Exibe e esconde as mensagens de sucesso e erro usando o .invoke()', function() {
+      cy.get('.success')
+        .should('not.be.visible')
+        .invoke('show')
+        .should('be.visible')
+        .and('contain', 'Mensagem enviada com sucesso.')
+        .invoke('hide')
+        .should('not.be.visible')
+      cy.get('.error')
+        .should('not.be.visible')
+        .invoke('show')
+        .should('be.visible')
+        .and('contain', 'Valide os campos obrigatórios!')
+        .invoke('hide')
+        .should('not.be.visible')
+    })
+
+    it('Preenche a area de texto usando o comando invoke', function() {
+      const areatext = Cypress._.repeat('0123456789', 20) // criamos uma variável e utilizamos o lodash para repetir. 
+      cy.get('#open-text-area')
+        .invoke('val', areatext)
+        .should('have.value', areatext) 
     })
 
     
