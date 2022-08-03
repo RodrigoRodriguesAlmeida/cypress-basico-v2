@@ -1,6 +1,7 @@
 /// <reference types="Cypress" />
 
 describe('Central de Atendimento ao Cliente TAT', function() {
+    const TRHEE_SECONDS_IN_MS = 3000 // variável que simula os três segundos (em milissegundos)
     beforeEach(function() {
         cy.visit ('./src/index.html')
     })
@@ -9,23 +10,35 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     })
     
     it('Preenche os campos obrigatórios e envia o formulário', function() {
+        cy.clock() // congela o relógio do navegador
+
         cy.get('#firstName').type('Rodrigo')
         cy.get('#lastName').type('Rodrigues')
         cy.get('#email').type('rodrigo.rodrigues.almeida1@gmail.com')
         cy.get('#open-text-area').type('Executando o primeiro exercício da aula 2', { delay: 0 })
         cy.contains('button', 'Enviar').click()
        
-        cy.get('.success').should('be.visible')        
+        cy.get('.success').should('be.visible') // verifica que a mensagem de sucesso está sendo exibida.
+
+        cy.tick(TRHEE_SECONDS_IN_MS) // avança o relógio três segundos (em milissegundos). Avanço este tempo para não perdê-lo esperando.
+        
+        cy.get('.success').should('not.be.visible')  // verifica que a mensagem de sucesso não está sendo exibida.     
     })
     
     it('Exibe mensagem de erro ao submeter o formulário com um email com formatação inválida' , function() { 
+        cy.clock() // congela o relógio do navegador
+
         cy.get('#firstName').type('Rodrigo')
         cy.get('#lastName').type('Rodrigues')
         cy.get('#email').type('rodrigo.rodrigues.almeida1@gmail,com')
         cy.get('#open-text-area').type('Executando o primeiro exercício da aula 2', { delay: 0 })
         cy.contains('button', 'Enviar').click()
-       
-        cy.get('.error').should('be.visible')        
+
+        cy.get('.error').should('be.visible') // verifica que a mensagem de erro está sendo exibida.
+
+        cy.tick(TRHEE_SECONDS_IN_MS) // avança o relógio três segundos (em milissegundos). Avanço este tempo para não perdê-lo esperando.
+        
+        cy.get('.error').should('not.be.visible') // verifica que a mensagem de erro não está sendo exibida.
     })
 
     it('Campo telefone continua vazio quando preenchido com valor não numérico', function() {
@@ -35,13 +48,19 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     })
 
     it('Exibe mensagem de erro quando o telefone se torna obrigatório mas não é preenchido antes do envio do formulário', function() {
+        cy.clock() // congela o relógio do navegador
+
         cy.get('#firstName').type('Rodrigo')
         cy.get('#lastName').type('Rodrigues')
         cy.get('#email').type('rodrigo.rodrigues.almeida1@gmail.com')
         cy.get('#phone-checkbox').check()
         cy.get('#open-text-area').type('Executando o exercício extra 4', { delay: 0 })        
         cy.contains('button', 'Enviar').click()
-        cy.get('.error').should('be.visible')  
+        cy.get('.error').should('be.visible') // verifica que a mensagem de erro está sendo exibida.
+
+        cy.tick(TRHEE_SECONDS_IN_MS) // avança o relógio três segundos (em milissegundos). Avanço este tempo para não perdê-lo esperando.
+
+        cy.get('.error').should('not.be.visible') // verifica que a mensagem de erro não está sendo exibida.
     })
 
     it('Preenche e limpa os campos nome, sobrenome, email e telefone', function() {
@@ -68,13 +87,25 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     })
 
     it('Exibe mensagem de erro ao submeter o formulário sem preencher os campos obrigatórios', function() {        
+      cy.clock() // congela o relógio do navegador
+
       cy.contains('button', 'Enviar').click()
-      cy.get('.error').should('be.visible')  
+      cy.get('.error').should('be.visible') // verifica que a mensagem de erro está sendo exibida.
+      
+      cy.tick(TRHEE_SECONDS_IN_MS) // avança o relógio três segundos (em milissegundos). Avanço este tempo para não perdê-lo esperando.  
+
+      cy.get('.error').should('not.be.visible') // verifica que a mensagem de erro não está sendo exibida.
     })
 
     it('Envia o formuário com sucesso usando um comando customizado', function() {
+      cy.clock() // congela o relógio do navegador
+
       cy.fillMandatoryFieldsAndSubmit()
-      cy.get('.success').should('be.visible')  
+      cy.get('.success').should('be.visible') // verifica que a mensagem de sucesso está sendo exibida.
+
+      cy.tick(TRHEE_SECONDS_IN_MS) // avança o relógio três segundos (em milissegundos). Avanço este tempo para não perdê-lo esperando.
+
+      cy.get('.success').should('not.be.visible') // verifica que a mensagem de sucesso não está sendo exibida.
     })
 
     it('Seleciona um produto (YouTube) por seu texto', function() {
